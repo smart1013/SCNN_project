@@ -1,8 +1,7 @@
 #ifndef SCNN_MULT_ARRAY_H_
 #define SCNN_MULT_ARRAY_H_
 
-#include <vector>
-#include <deque>
+#include "common.h"
 
 namespace Scnn {
 
