@@ -26,11 +26,8 @@ int main() {
     mult_array.cartesian_product(ia_vector, w_vector);
 
     mult_array.print_output_queue();
-    
-    std::vector<Scnn::PartialSum> outputs = mult_array.pop_outputs();
 
-    for (const auto& output : outputs) {
-        std::cout << "Value: " << output.value << ", Addr: " << output.addr << std::endl;
-    }
+    mult_array.reset();
+
     return 0;
 }

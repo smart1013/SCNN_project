@@ -48,7 +48,6 @@ namespace Scnn {
             if (output_queue.empty()) {
                 break;
             }
-            outputs.push_back(output_queue.front());
             output_queue.pop_front();
         }
         return outputs;
