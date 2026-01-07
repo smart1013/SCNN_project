@@ -30,11 +30,15 @@ public:
     }
 
     int get_index(int n, int c, int h, int w) {
+        assert(n < dims.n && c < dims.c && h < dims.h && w < dims.w);
         return ((n * dims.c + c) * dims.h + h) * dims.w + w;
     }
 
     float get_value(int n, int c, int h, int w) {
         int index = get_index(n, c, h, w);
+        // std::cout << "index: " << index << std::endl;
+        // std::cout << "data size: " << data.size() << std::endl;
+        assert(index <= data.size());
         return data[index];
     }
 
@@ -44,8 +48,8 @@ public:
     }
 
     void set_random(float min_val, float max_val, float sparsity) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
+        // std::random_device rd;
+        std::mt19937 gen(0);
         std::uniform_real_distribution<> dis(min_val, max_val);
         std::bernoulli_distribution is_zero(sparsity);
         

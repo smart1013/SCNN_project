@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include <random>   
+#include <assert.h>
 
 namespace Scnn {
     using namespace std;
