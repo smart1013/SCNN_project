@@ -36,8 +36,6 @@ public:
 
     float get_value(int n, int c, int h, int w) {
         int index = get_index(n, c, h, w);
-        // std::cout << "index: " << index << std::endl;
-        // std::cout << "data size: " << data.size() << std::endl;
         assert(index <= data.size());
         return data[index];
     }
@@ -45,6 +43,15 @@ public:
     void set_value(int n, int c, int h, int w, float value) {
         int index = get_index(n, c, h, w);
         data[index] = value;
+    }
+
+    std::tuple<int, int, int, int> get_addr(int phy_addr) {
+        int w = phy_addr % dims.w;
+        int h = (phy_addr / dims.w) % dims.h;
+        int c = (phy_addr / (dims.w * dims.h)) % dims.c;
+        int n = (phy_addr / (dims.w * dims.h * dims.c));
+
+        return std::make_tuple(n, c, h, w);
     }
 
     void set_random(float min_val, float max_val, float sparsity) {
@@ -60,6 +67,19 @@ public:
                 value = dis(gen);
             }
         }
+    }
+
+    void print() {
+        int n = dims.n;
+        int c = dims.c;
+        int h = dims.h;
+        int w = dims.w;
+        int size = data.size();
+        std::cout << "size: " << size << std::endl;
+        std::cout << "n: " << n << std::endl;
+        std::cout << "c: " << c << std::endl;
+        std::cout << "h: " << h << std::endl;
+        std::cout << "w: " << w << std::endl;
     }
 
 };

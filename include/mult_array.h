@@ -2,14 +2,11 @@
 #define SCNN_MULT_ARRAY_H_
 
 #include "common.h"
+#include "tensor.h"
+#include "loader.h"
 
 namespace Scnn {
 
-struct Element {
-    bool valid;
-    float value;
-    int addr;
-};
 
 // struct filterWeight {
 //     bool valid;
