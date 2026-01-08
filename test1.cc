@@ -24,4 +24,13 @@ int main() {
     // std::cout << "val1: " << val1 << std::endl;
     // std::cout << "val2: " << val2 << std::endl;
     input_activation.print();
+    filter_weight.print();
+
+    for (int i = 0; i < filter_weight.get_size(); i++) {
+        std::tuple<int, int, int, int> addr = filter_weight.get_addr(i);
+        int n, c, h, w;
+        std::tie(n, c, h, w) = addr;
+        float val = filter_weight.get_value(n, c, h, w);
+        std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
+    }
 }

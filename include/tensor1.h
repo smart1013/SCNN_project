@@ -1,42 +1,51 @@
-#include "common.h"
-#include "tensor.h"
+#ifndef TENSOR_H_
+#define TENSOR_H_
 
+#include "common.h"
 
 namespace Scnn {
-    Tensor::Tensor() {
+
+struct TensorDims {
+    int n;          // Batch size
+    int c;          // Channel
+    int h;          // Height
+    int w;          // Width
+};
+
+class Tensor {
+public:
+    TensorDims dims;
+    std::vector<float> data;
+
+    Tensor() {
     }
-    
-    Tensor::Tensor(const TensorDims& dims) {
+
+    ~Tensor() {
+        data.clear();
+    }
+
+    Tensor(const TensorDims& dims) {
         this->dims = dims;
         data.resize(dims.n * dims.c * dims.h * dims.w);
     }
 
-    Tensor::~Tensor() {
-        data.clear();
-    }
-
-
-    int Tensor::get_size() {
-        return data.size();
-    }
-
-    int Tensor::get_index(int n, int c, int h, int w) {
+    int get_index(int n, int c, int h, int w) {
         assert(n < dims.n && c < dims.c && h < dims.h && w < dims.w);
         return ((n * dims.c + c) * dims.h + h) * dims.w + w;
     }
 
-    float Tensor::get_value(int n, int c, int h, int w) {
+    float get_value(int n, int c, int h, int w) {
         int index = get_index(n, c, h, w);
         assert(index <= data.size());
         return data[index];
     }
 
-    void Tensor::set_value(int n, int c, int h, int w, float value) {
+    void set_value(int n, int c, int h, int w, float value) {
         int index = get_index(n, c, h, w);
         data[index] = value;
     }
 
-    std::tuple<int, int, int, int> Tensor::get_addr(int phy_addr) {
+    std::tuple<int, int, int, int> get_addr(int phy_addr) {
         int w = phy_addr % dims.w;
         int h = (phy_addr / dims.w) % dims.h;
         int c = (phy_addr / (dims.w * dims.h)) % dims.c;
@@ -45,7 +54,7 @@ namespace Scnn {
         return std::make_tuple(n, c, h, w);
     }
 
-    void Tensor::set_random(float min_val, float max_val, float sparsity) {
+    void set_random(float min_val, float max_val, float sparsity) {
         // std::random_device rd;
         std::mt19937 gen(0);
         std::uniform_real_distribution<> dis(min_val, max_val);
@@ -60,7 +69,7 @@ namespace Scnn {
         }
     }
 
-    void Tensor::print() {
+    void print() {
         int n = dims.n;
         int c = dims.c;
         int h = dims.h;
@@ -73,5 +82,8 @@ namespace Scnn {
         std::cout << "w: " << w << std::endl;
     }
 
+};
+
 
 }
+#endif // TENSOR_H_
