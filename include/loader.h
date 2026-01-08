@@ -14,13 +14,11 @@ struct Element {
 class Input_Buffer {
 public:
     std::vector<Element> buffer;
-    int sparsity;
     int size;
 
     Input_Buffer();
     ~Input_Buffer();
 
-    Input_Buffer(int size);
     void load_input_buffer(Scnn::Tensor& tensor);
 
 private:

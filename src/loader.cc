@@ -6,8 +6,7 @@
 
 namespace Scnn {
     
-    Input_Buffer::Input_Buffer(int size) {
-        buffer.resize(size);
+    Input_Buffer::Input_Buffer() {
     }
     
     Input_Buffer::~Input_Buffer() {
@@ -15,13 +14,22 @@ namespace Scnn {
     }
 
     void Input_Buffer::load_input_buffer(Scnn::Tensor& tensor) {
-        for (auto& value : tensor.data) {
+
+        buffer.resize(tensor.non_zero_count);
+        this->size = tensor.non_zero_count;
+
+        for (int i = 0; i < tensor.data.size(); i++) {
+            std::tuple<int, int, int, int> addr = tensor.get_addr(i);
+            int n, c, h, w;
+            std::tie(n, c, h, w) = addr;
+            float value = tensor.get_value(n, c, h, w);
             if (value == 0.0) {
                 continue;
             }
             Element element;
             element.value = value;
-            
+            element.addr = addr;
+            buffer.push_back(element);
         }
     }
     

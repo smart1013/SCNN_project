@@ -16,6 +16,9 @@ class Tensor {
 public:
     TensorDims dims;
     std::vector<float> data;
+    int non_zero_count;
+    int size;
+    int sparsity;
 
     Tensor();
 
@@ -36,6 +39,8 @@ public:
     void set_random(float min_val, float max_val, float sparsity);
 
     void print();
+
+    int get_non_zero_count();
 };
 
 }

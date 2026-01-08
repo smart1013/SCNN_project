@@ -4,17 +4,20 @@
 
 namespace Scnn {
     Tensor::Tensor() {
+        this->non_zero_count = 0;
+        this->size = 0;
+        this->sparsity = 0.0;
     }
     
     Tensor::Tensor(const TensorDims& dims) {
         this->dims = dims;
         data.resize(dims.n * dims.c * dims.h * dims.w);
+        this->size = data.size();
     }
 
     Tensor::~Tensor() {
         data.clear();
     }
-
 
     int Tensor::get_size() {
         return data.size();
@@ -56,8 +59,10 @@ namespace Scnn {
                 value = 0.0;
             } else {
                 value = dis(gen);
+                this->non_zero_count++;
             }
         }
+        this->sparsity = (float)this->non_zero_count / (float)this->size;
     }
 
     void Tensor::print() {
@@ -73,5 +78,14 @@ namespace Scnn {
         std::cout << "w: " << w << std::endl;
     }
 
+    int Tensor::get_non_zero_count() {
+        int count = 0;
+        for (auto& value : data) {
+            if (value != 0.0) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 }
