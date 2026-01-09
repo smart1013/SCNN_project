@@ -5,12 +5,12 @@
 int main() {
     Scnn::TensorDims input_dims, filter_dims;
     input_dims.n = 1;
-    input_dims.c = 3;
+    input_dims.c = 100;
     input_dims.h = 224;
     input_dims.w = 224;
 
     filter_dims.n = 1;
-    filter_dims.c = 3;
+    filter_dims.c = 100;
     filter_dims.h = 11;
     filter_dims.w = 11;
     
@@ -24,6 +24,21 @@ int main() {
 
     Scnn::Input_Buffer weight_buffer;
     weight_buffer.load_input_buffer(filter_weight);
+
+    Scnn::Loader loader;
+    loader.load_IA(input_activation);
+
+    int a = 0;
+    for (auto& buffer : loader.pe_buffers) {
+        std::cout << "size: " << buffer.size << std::endl;
+        a += buffer.size;
+    }
+    std::cout << "a: " << a << std::endl;
+    std::cout << "input_activation.size: " << input_activation.non_zero_count << std::endl;
+
+
+
+
 
     // for (int i = 0; i < filter_weight.get_size(); i++) {
     //     std::tuple<int, int, int, int> addr = filter_weight.get_addr(i);
@@ -40,8 +55,6 @@ int main() {
     //     float val = weight_buffer.buffer[i].value;
     //     std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
     // }
-
-    weight_buffer.print();
 
 
     // for (int c = 0; c < filter_weight.dims.c; c++) {

@@ -42,6 +42,58 @@ namespace Scnn {
             std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
         }
     }
+
+    void Input_Buffer::add_element(float value, std::tuple<int, int, int, int> addr) {
+        Element element;
+        element.value = value;
+        element.addr = addr;
+        buffer.push_back(element);
+        size++;
+    }
+
+    Loader::Loader() {
+    }
+
+    Loader::~Loader() {
+        pe_buffers.clear();
+    }
+
+    void Loader::load_IA(Scnn::Tensor& tensor) {
+        // 1. Initialize buffers for 64 PEs
+        pe_buffers.clear();
+        pe_buffers.resize(HardwareConfig::NUM_PE); // 64
+        
+        // 2. Calculate Tile Dimensions
+        int grid_dim = 8; // sqrt(64)
+        int h_chunk = (tensor.dims.h + grid_dim - 1) / grid_dim;
+        int w_chunk = (tensor.dims.w + grid_dim - 1) / grid_dim;
+        
+        // 3. Iterate through every pixel in global tensor
+        for (int i = 0; i < tensor.data.size(); ++i) {
+            float val = tensor.data[i];
+            if (val == 0.0) continue; // Skip zeros (SCNN optimization)
+            
+            // Decode address
+            auto [n, c, h, w] = tensor.get_addr(i);
+            
+            // 4. Find which PE owns this pixel
+            int pe_r = h / h_chunk; 
+            int pe_c = w / w_chunk;
+            
+            // Safety clamp
+            if (pe_r >= grid_dim) pe_r = grid_dim - 1;
+            if (pe_c >= grid_dim) pe_c = grid_dim - 1;
+            
+            int pe_index = pe_r * grid_dim + pe_c;
+            
+            // 5. Add to that PE's specific buffer
+            pe_buffers[pe_index].add_element(val, tensor.get_addr(i));
+        }
+    }
     
+
+    
+
+
 
 }

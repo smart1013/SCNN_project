@@ -5,10 +5,12 @@
 
 namespace Scnn {
 
+
 struct Element {
     float value;
     std::tuple<int, int, int, int> addr;
 };
+
 
 class Input_Buffer {
 public:
@@ -20,6 +22,7 @@ public:
 
     void load_input_buffer(Scnn::Tensor& tensor);
     void print();
+    void add_element(float value, std::tuple<int, int, int, int> addr);
 
 private:
     std::string filename;
@@ -31,7 +34,7 @@ public:
     Loader();
     ~Loader();
 
-    std::vector<Input_Buffer> PE_Buffers;
+    std::vector<Input_Buffer> pe_buffers;
 
     void load_IA(Scnn::Tensor& tensor);
     void load_W(Scnn::Tensor& tensor);
