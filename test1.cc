@@ -48,6 +48,7 @@ int main() {
     //     std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
     // }
 
+    
     // for (int i = 0; i < weight_buffer.size; i++) {
     //     std::tuple<int, int, int, int> addr = weight_buffer.buffer[i].addr;
     //     int n, c, h, w;

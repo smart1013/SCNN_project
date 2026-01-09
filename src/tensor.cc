@@ -71,6 +71,7 @@ namespace Scnn {
         int h = dims.h;
         int w = dims.w;
         int size = data.size();
+        std::cout << "non_zero_count: " << non_zero_count << std::endl;
         std::cout << "size: " << size << std::endl;
         std::cout << "n: " << n << std::endl;
         std::cout << "c: " << c << std::endl;

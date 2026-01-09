@@ -37,7 +37,6 @@ public:
     std::vector<Input_Buffer> pe_buffers;
 
     void load_IA(Scnn::Tensor& tensor);
-    void load_W(Scnn::Tensor& tensor);
 
 private:
     std::string filename;
