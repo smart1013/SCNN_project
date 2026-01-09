@@ -33,4 +33,28 @@ int main() {
     //     std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
     // }
 
+    // for (int i = 0; i < weight_buffer.size; i++) {
+    //     std::tuple<int, int, int, int> addr = weight_buffer.buffer[i].addr;
+    //     int n, c, h, w;
+    //     std::tie(n, c, h, w) = addr;
+    //     float val = weight_buffer.buffer[i].value;
+    //     std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
+    // }
+
+    weight_buffer.print();
+
+
+    // for (int c = 0; c < filter_weight.dims.c; c++) {
+    //     std::cout << "c: " << c << std::endl;
+    //     int starting_index = c * filter_weight.dims.h * filter_weight.dims.w;
+    //     int ending_index = (c + 1) * filter_weight.dims.h * filter_weight.dims.w;
+    //     for (int i = starting_index; i < ending_index; i++) {
+    //         std::tuple<int, int, int, int> addr = filter_weight.get_addr(i);
+    //         int n, c, h, w;
+    //         std::tie(n, c, h, w) = addr;
+    //         float val = filter_weight.get_value(n, c, h, w);
+    //         std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
+    //     }
+    // }
+
 }

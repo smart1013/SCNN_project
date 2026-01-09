@@ -10,7 +10,6 @@ struct Element {
     std::tuple<int, int, int, int> addr;
 };
 
-
 class Input_Buffer {
 public:
     std::vector<Element> buffer;
@@ -20,11 +19,11 @@ public:
     ~Input_Buffer();
 
     void load_input_buffer(Scnn::Tensor& tensor);
+    void print();
 
 private:
     std::string filename;
 };
-
 
 
 class Loader {
@@ -32,7 +31,9 @@ public:
     Loader();
     ~Loader();
 
-    std::vector<Input_Buffer>* load_IA(Scnn::Tensor& tensor);
+    std::vector<Input_Buffer> PE_Buffers;
+
+    void load_IA(Scnn::Tensor& tensor);
     void load_W(Scnn::Tensor& tensor);
 
 private:
