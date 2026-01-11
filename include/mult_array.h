@@ -8,16 +8,9 @@
 namespace Scnn {
 
 
-// struct filterWeight {
-//     bool valid;
-//     float value;
-//     int addr;
-// };
-
 struct PartialSum {
-    bool valid;
     float value;
-    int addr;
+    std::tuple<int, int, int, int> addr;
 };
 
 class MultArray {

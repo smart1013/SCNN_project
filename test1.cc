@@ -4,15 +4,16 @@
 
 int main() {
     Scnn::TensorDims input_dims, filter_dims;
-    input_dims.n = 1;
-    input_dims.c = 100;
-    input_dims.h = 224;
-    input_dims.w = 224;
 
-    filter_dims.n = 1;
-    filter_dims.c = 100;
-    filter_dims.h = 11;
-    filter_dims.w = 11;
+    input_dims.n = Scnn::LayerConfig::N;
+    input_dims.c = Scnn::LayerConfig::C;
+    input_dims.h = Scnn::LayerConfig::H;
+    input_dims.w = Scnn::LayerConfig::W;
+
+    filter_dims.n = Scnn::LayerConfig::N;
+    filter_dims.c = Scnn::LayerConfig::C;
+    filter_dims.h = Scnn::LayerConfig::S;
+    filter_dims.w = Scnn::LayerConfig::R;
     
     Scnn::Tensor input_activation(input_dims);
     Scnn::Tensor filter_weight(filter_dims);
@@ -33,11 +34,6 @@ int main() {
         std::cout << "size: " << buffer.size << std::endl;
         a += buffer.size;
     }
-    std::cout << "a: " << a << std::endl;
-    std::cout << "input_activation.size: " << input_activation.non_zero_count << std::endl;
-
-
-
 
 
     // for (int i = 0; i < filter_weight.get_size(); i++) {
@@ -70,5 +66,7 @@ int main() {
     //         std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
     //     }
     // }
+
+
 
 }

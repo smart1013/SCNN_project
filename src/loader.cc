@@ -8,7 +8,7 @@ namespace Scnn {
     
     Input_Buffer::Input_Buffer() {
     }
-    
+
     Input_Buffer::~Input_Buffer() {
         buffer.clear();
     }
@@ -88,6 +88,13 @@ namespace Scnn {
             
             // 5. Add to that PE's specific buffer
             pe_buffers[pe_index].add_element(val, tensor.get_addr(i));
+        }
+
+        max_size = 0;
+        for (auto& buffer : pe_buffers) {
+            if (buffer.size > max_size) {
+                max_size = buffer.size;
+            }
         }
     }
     

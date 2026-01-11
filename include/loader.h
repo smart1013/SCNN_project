@@ -35,6 +35,7 @@ public:
     ~Loader();
 
     std::vector<Input_Buffer> pe_buffers;
+    int max_size;
 
     void load_IA(Scnn::Tensor& tensor);
 
