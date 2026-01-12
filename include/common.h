@@ -29,13 +29,20 @@ struct HardwareConfig{
 };
 
 struct LayerConfig {
-    static const int N = 1;
     static const int C = 3;
     static const int H = 224;
     static const int W = 224;
     static const int S = 11;
     static const int R = 11;
     static const int K = 64;
+
+    static constexpr float IA_MIN_VAL = 0.0;
+    static constexpr float IA_MAX_VAL = 1.0;
+    static constexpr float IA_SPARSITY = 0.5;
+
+    static constexpr float FW_MIN_VAL = 0.0;
+    static constexpr float FW_MAX_VAL = 1.0;
+    static constexpr float FW_SPARSITY = 0.5;
 };
 
 }

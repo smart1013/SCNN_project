@@ -1,39 +1,48 @@
 #include <iostream>
 #include "tensor.h"
 #include "loader.h"
+#include "convlayer.h"
 
 int main() {
-    Scnn::TensorDims input_dims, filter_dims;
+    // Scnn::TensorDims input_dims, filter_dims;
 
-    input_dims.n = Scnn::LayerConfig::N;
-    input_dims.c = Scnn::LayerConfig::C;
-    input_dims.h = Scnn::LayerConfig::H;
-    input_dims.w = Scnn::LayerConfig::W;
+    // input_dims.n = Scnn::LayerConfig::N;
+    // input_dims.c = Scnn::LayerConfig::C;
+    // input_dims.h = Scnn::LayerConfig::H;
+    // input_dims.w = Scnn::LayerConfig::W;
 
-    filter_dims.n = Scnn::LayerConfig::N;
-    filter_dims.c = Scnn::LayerConfig::C;
-    filter_dims.h = Scnn::LayerConfig::S;
-    filter_dims.w = Scnn::LayerConfig::R;
+    // filter_dims.n = Scnn::LayerConfig::N;
+    // filter_dims.c = Scnn::LayerConfig::C;
+    // filter_dims.h = Scnn::LayerConfig::S;
+    // filter_dims.w = Scnn::LayerConfig::R;
     
-    Scnn::Tensor input_activation(input_dims);
-    Scnn::Tensor filter_weight(filter_dims);
-    input_activation.set_random(0.0, 1.0, 0.5); 
-    filter_weight.set_random(0.0, 1.0, 0.5); 
+    // Scnn::Tensor input_activation(input_dims);
+    // Scnn::Tensor filter_weight(filter_dims);
+    // input_activation.set_random(0.0, 1.0, 0.5); 
+    // filter_weight.set_random(0.0, 1.0, 0.5); 
 
-    input_activation.print();
-    filter_weight.print();
+    Scnn::ConvLayer conv_layer;
+    conv_layer.initialize();
 
-    Scnn::Input_Buffer weight_buffer;
-    weight_buffer.load_input_buffer(filter_weight);
-
-    Scnn::Loader loader;
-    loader.load_IA(input_activation);
-
-    int a = 0;
-    for (auto& buffer : loader.pe_buffers) {
-        std::cout << "size: " << buffer.size << std::endl;
-        a += buffer.size;
+    conv_layer.IA.print();
+    for (int i = 0; i < conv_layer.FW.size(); i++) {
+        conv_layer.FW[i]->print();
     }
+
+    // input_activation.print();
+    // filter_weight.print();
+
+    // Scnn::Input_Buffer weight_buffer;
+    // weight_buffer.load_input_buffer(filter_weight);
+
+    // Scnn::Loader loader;
+    // loader.load_IA(conv_layer.IA);
+
+    // int a = 0;
+    // for (auto& buffer : loader.pe_buffers) {
+    //     std::cout << "size: " << buffer.size << std::endl;
+    //     a += buffer.size;
+    // }
 
 
     // for (int i = 0; i < filter_weight.get_size(); i++) {

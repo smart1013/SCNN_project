@@ -20,10 +20,10 @@ namespace Scnn {
         this->size = tensor.non_zero_count;
 
         for (int i = 0; i < tensor.data.size(); i++) {
-            std::tuple<int, int, int, int> addr = tensor.get_addr(i);
-            int n, c, h, w;
-            std::tie(n, c, h, w) = addr;
-            float value = tensor.get_value(n, c, h, w);
+            std::tuple<int, int, int> addr = tensor.get_addr(i);
+            int c, h, w;
+            std::tie(c, h, w) = addr;
+            float value = tensor.get_value(c, h, w);
             if (value != 0.0) {
                 Element element;
                 element.value = value;
@@ -35,15 +35,15 @@ namespace Scnn {
 
     void Input_Buffer::print() {
         for (int i = 0; i < buffer.size(); i++) {
-            std::tuple<int, int, int, int> addr = buffer[i].addr;
-            int n, c, h, w;
-            std::tie(n, c, h, w) = addr;
+            std::tuple<int, int, int> addr = buffer[i].addr;
+            int c, h, w;
+            std::tie(c, h, w) = addr;
             float val = buffer[i].value;
-            std::cout << "value:" << val << "\t" << "address:" << n << " " << c << " " << h << " " << w << std::endl;
+            std::cout << "value:" << val << "\t" << "address:" << c << " " << h << " " << w << std::endl;
         }
     }
 
-    void Input_Buffer::add_element(float value, std::tuple<int, int, int, int> addr) {
+    void Input_Buffer::add_element(float value, std::tuple<int, int, int> addr) {
         Element element;
         element.value = value;
         element.addr = addr;
@@ -74,7 +74,7 @@ namespace Scnn {
             if (val == 0.0) continue; // Skip zeros (SCNN optimization)
             
             // Decode address
-            auto [n, c, h, w] = tensor.get_addr(i);
+            auto [c, h, w] = tensor.get_addr(i);
             
             // 4. Find which PE owns this pixel
             int pe_r = h / h_chunk; 

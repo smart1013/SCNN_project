@@ -8,7 +8,7 @@ namespace Scnn {
 
 struct Element {
     float value;
-    std::tuple<int, int, int, int> addr;
+    std::tuple<int, int, int> addr;
 };
 
 
@@ -22,7 +22,7 @@ public:
 
     void load_input_buffer(Scnn::Tensor& tensor);
     void print();
-    void add_element(float value, std::tuple<int, int, int, int> addr);
+    void add_element(float value, std::tuple<int, int, int> addr);
 
 private:
     std::string filename;
