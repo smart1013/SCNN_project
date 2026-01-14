@@ -17,7 +17,6 @@ public:
     ~ConvLayer();
 
     void initialize();
-    
 
 };
 

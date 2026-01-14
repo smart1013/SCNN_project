@@ -29,6 +29,9 @@ int main() {
         conv_layer.FW[i]->print();
     }
 
+    Scnn::Loader loader;
+    loader.load_IA(conv_layer.IA);
+
     // input_activation.print();
     // filter_weight.print();
 
@@ -39,10 +42,14 @@ int main() {
     // loader.load_IA(conv_layer.IA);
 
     // int a = 0;
-    // for (auto& buffer : loader.pe_buffers) {
-    //     std::cout << "size: " << buffer.size << std::endl;
-    //     a += buffer.size;
+    // for (auto& buffer : loader.IA_buffers) {
+    //     std::cout << "size: " << buffer->size << std::endl;
+    //     a += buffer->size;
     // }
+    // std::cout << "total size: " << a << std::endl;
+    // std::cout << "non_zeros: " << conv_layer.IA.non_zero_count << std::endl;
+
+    
 
 
     // for (int i = 0; i < filter_weight.get_size(); i++) {

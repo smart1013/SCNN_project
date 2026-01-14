@@ -14,6 +14,12 @@
 #include <fstream>
 #include <iostream>
 
+#include "tensor.h"
+#include "loader.h"
+#include "pe.h"
+#include "mult_array.h"
+#include "convlayer.h"
+
 
 
 namespace Scnn {
@@ -28,6 +34,7 @@ struct HardwareConfig{
     static const int W_VECTOR_SIZE = 4;
 };
 
+// Layer (CNN) Configuration
 struct LayerConfig {
     static const int C = 3;
     static const int H = 224;
