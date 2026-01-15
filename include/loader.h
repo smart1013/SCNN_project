@@ -9,12 +9,14 @@ namespace Scnn {
 
 struct Input_Element {
     float value;
+    // (C, H(y), W(x))
     std::tuple<int, int, int> addr;
 };
 
 
 struct Filter_Element {
     float value;
+    // (K, C, R(y), S(x))
     std::tuple<int, int, int, int> addr;
 };
 

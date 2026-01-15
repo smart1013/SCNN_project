@@ -15,7 +15,6 @@
 #include <iostream>
 
 
-
 namespace Scnn {
     using namespace std;
 
@@ -26,6 +25,7 @@ struct HardwareConfig{
     static const int OUTPUT_PORT = 16;
     static const int IA_VECTOR_SIZE = 4;
     static const int W_VECTOR_SIZE = 4;
+    static const int OUTPUT_PORTS = 16;
 };
 
 // Layer (CNN) Configuration
@@ -36,6 +36,10 @@ struct LayerConfig {
     static const int S = 11;
     static const int R = 11;
     static const int K = 64;
+
+    static const int STRIDE = 1;
+    static const int DILATION = 1;
+    static const int PADDING = 1;
 
     static constexpr float IA_MIN_VAL = 0.0;
     static constexpr float IA_MAX_VAL = 1.0;

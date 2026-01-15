@@ -10,7 +10,7 @@ namespace Scnn {
 
 struct PartialSum {
     float value;
-    std::tuple<int, int, int, int> addr;
+    std::tuple<int, int, int> addr;
 };
 
 class MultArray {
@@ -29,8 +29,6 @@ public:
 
     void print_output_queue();
 
-private:
-    static const int OUTPUT_PORTS = 16;
     std::deque<PartialSum> output_queue;
 };
 

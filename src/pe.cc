@@ -16,7 +16,7 @@ namespace Scnn {
     void PE::cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer) {
         int ia_size = input_tile->size;
         int w_size = weight_buffer->size;
-        // Scnn::MultArray mult_array;
+        Scnn::MultArray mult_array;
 
         for (int i = 0; i < ia_size; i += Scnn::HardwareConfig::IA_VECTOR_SIZE) {
             ia_vector.clear();
@@ -41,10 +41,10 @@ namespace Scnn {
 
                 /******************************************************/
 
-                std::cout << "IA vector size:" << "\t" << ia_vector.size() << std::endl;
-                std::cout << "Weight vector size:" << "\t" << w_vector.size() << std::endl;
+                // std::cout << "IA vector size:" << "\t" << ia_vector.size() << std::endl;
+                // std::cout << "Weight vector size:" << "\t" << w_vector.size() << std::endl;
                 
-                
+                mult_array.cartesian_product(ia_vector, w_vector);
 
 
 
