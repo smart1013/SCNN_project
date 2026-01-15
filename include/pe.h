@@ -13,18 +13,17 @@ class PE {
 
 public:
     std::vector<Scnn::Input_Element> ia_vector;
-    std::vector<Scnn::Weight_Element> w_vector;
+    std::vector<Scnn::Filter_Element> w_vector;
     
     PE();
     ~PE();
 
-}
+    void cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer);
+    
+};
+
 }
 
 
 
 #endif // PE_H_
-
-
-
-

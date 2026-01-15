@@ -2,6 +2,7 @@
 #include "tensor.h"
 #include "loader.h"
 #include "convlayer.h"
+#include "pe.h"
 
 
 int main() {
@@ -11,6 +12,7 @@ int main() {
 
     {
         Scnn::Loader loader;
+        Scnn::PE pe;
 
         int filter_size = 0;
         for (int k = 0; k < Scnn::LayerConfig::K; k++) {
@@ -19,13 +21,13 @@ int main() {
                 loader.Load_FW(conv_layer.FW, k, k + 1, c);
 
                 /**************************************************************/
-                for (int pe = 0; pe < Scnn::HardwareConfig::NUM_PE; pe++) {
-                    Scnn::Input_Buffer* input_tile = loader.IA_buffers[pe];
+                for (int pe_num = 0; pe_num < Scnn::HardwareConfig::NUM_PE; pe_num++) {
+                    Scnn::Input_Buffer* input_tile = loader.IA_buffers[pe_num];
                     
-                    std::cout << "Input tile size:" << "\t" << input_tile->size << std::endl;
-                    std::cout << "Filter weight size:" << "\t" << loader.weight_buffer.size << std::endl;
+                    // std::cout << "Input tile size:" << "\t" << input_tile->size << std::endl;
+                    // std::cout << "Filter weight size:" << "\t" << loader.weight_buffer.size << std::endl;
 
-                    
+                    pe.cartesian_product(input_tile, &loader.weight_buffer);
 
 
 

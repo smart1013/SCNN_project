@@ -14,12 +14,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "tensor.h"
-#include "loader.h"
-#include "pe.h"
-#include "mult_array.h"
-#include "convlayer.h"
-
 
 
 namespace Scnn {

@@ -21,7 +21,7 @@ public:
 
     void reset();
 
-    void cartesian_product(const std::vector<Element>& ia_vector, const std::vector<Element>& w_vector);
+    void cartesian_product(const std::vector<Input_Element>& ia_vector, const std::vector<Filter_Element>& w_vector);
     
     std::vector<PartialSum> pop_outputs();
 

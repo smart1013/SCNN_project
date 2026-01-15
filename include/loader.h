@@ -2,6 +2,7 @@
 #define LOADER_H_
 
 #include "common.h"
+#include "tensor.h"
 
 namespace Scnn {
 
