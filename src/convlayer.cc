@@ -15,7 +15,7 @@ namespace Scnn {
     }
 
     void ConvLayer::initialize() {
-        Scnn::TensorDims input_dims, filter_dims;
+        Scnn::TensorDims input_dims, filter_dims, output_dims;
         FW.resize(Scnn::LayerConfig::K);
 
         input_dims.c = Scnn::LayerConfig::C;
@@ -26,6 +26,10 @@ namespace Scnn {
         filter_dims.h = Scnn::LayerConfig::S;
         filter_dims.w = Scnn::LayerConfig::R;
 
+        output_dims.c = Scnn::LayerConfig::K;
+        output_dims.h = ((input_dims.h + Scnn::LayerConfig::PADDING * 2 - Scnn::LayerConfig::DILATION * (filter_dims.h - 1) - 1) / Scnn::LayerConfig::STRIDE) + 1;
+        output_dims.w = ((input_dims.w + Scnn::LayerConfig::PADDING * 2 - Scnn::LayerConfig::DILATION * (filter_dims.w - 1) - 1) / Scnn::LayerConfig::STRIDE) + 1;
+
         IA = Scnn::Tensor(input_dims);
         IA.set_random(Scnn::LayerConfig::IA_MIN_VAL, Scnn::LayerConfig::IA_MAX_VAL, Scnn::LayerConfig::IA_SPARSITY, 42);
 
@@ -34,6 +38,8 @@ namespace Scnn {
             filter->set_random(Scnn::LayerConfig::FW_MIN_VAL, Scnn::LayerConfig::FW_MAX_VAL, Scnn::LayerConfig::FW_SPARSITY, i);
             FW[i] = filter;
         }
+
+        OA = Scnn::Tensor(output_dims);
     }
     
     

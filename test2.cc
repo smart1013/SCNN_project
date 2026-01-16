@@ -29,8 +29,6 @@ int main() {
 
                     pe.cartesian_product(input_tile, &loader.weight_buffer);
 
-
-
                 }
                 /**************************************************************/
 

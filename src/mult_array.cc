@@ -44,12 +44,16 @@ namespace Scnn {
                 int y_out = (y_in - y_weight * D + P) / U;
                 int x_out = (x_in - x_weight * D + P) / U;
 
+                if (y_out < 0 || x_out < 0) {
+                    continue;
+                }
+
                 PartialSum psum;
                 psum.value = ia.value * w.value;
                 psum.addr = std::make_tuple(k_out, y_out, x_out);
                 
-                std::cout << "Value: " << psum.value << ", Addr: " << "(" << k_out << ", " << y_out << ", " << x_out << ")" << std::endl;
-                // output_queue.push_back(psum);
+                // std::cout << "Value: " << psum.value << ", Addr: " << "(" << k_out << ", " << y_out << ", " << x_out << ")" << std::endl;
+                output_queue.push_back(psum);
             }
         }
     }

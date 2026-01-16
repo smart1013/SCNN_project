@@ -12,6 +12,7 @@ public:
 
     Scnn::Tensor IA;
     std::vector<Scnn::Tensor*> FW;
+    Scnn::Tensor OA;
 
     ConvLayer();
     ~ConvLayer();
