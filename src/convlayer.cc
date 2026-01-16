@@ -40,8 +40,5 @@ namespace Scnn {
         }
 
         OA = Scnn::Tensor(output_dims);
-    }
-    
-    
-    
+    }   
 }

@@ -27,7 +27,7 @@ int main() {
                     // std::cout << "Input tile size:" << "\t" << input_tile->size << std::endl;
                     // std::cout << "Filter weight size:" << "\t" << loader.weight_buffer.size << std::endl;
 
-                    pe.cartesian_product(input_tile, &loader.weight_buffer);
+                    pe.cartesian_product(input_tile, &loader.weight_buffer, &conv_layer.OA);
 
                 }
                 /**************************************************************/
@@ -35,6 +35,8 @@ int main() {
             }
         }
     }
+
+    conv_layer.OA.print();
 
 
 

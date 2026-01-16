@@ -83,7 +83,15 @@ namespace Scnn {
                 // std::cout << "IA vector size:" << "\t" << ia_vector.size() << std::endl;
                 // std::cout << "Weight vector size:" << "\t" << w_vector.size() << std::endl;
                 
-                mult_array.cartesian_product(ia_vector, w_vector);
+                int idle_count = mult_array.cartesian_product(ia_vector, w_vector, output_tensor);
+
+                for (auto p : mult_array.output_queue) {
+                    int k_out = std::get<0>(p.addr);
+                    int y_out = std::get<1>(p.addr);
+                    int x_out = std::get<2>(p.addr);
+                    int phy_addr = output_tensor->get_index(k_out, y_out, x_out);
+                    output_tensor->data[phy_addr] += p.value;
+                }
 
                 /******************************************************/
             }

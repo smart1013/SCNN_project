@@ -44,7 +44,48 @@ namespace Scnn {
                 int y_out = (y_in - y_weight * D + P) / U;
                 int x_out = (x_in - x_weight * D + P) / U;
 
-                if (y_out < 0 || x_out < 0) {
+                PartialSum psum;
+                psum.value = ia.value * w.value;
+                psum.addr = std::make_tuple(k_out, y_out, x_out);
+                
+                // std::cout << "Value: " << psum.value << ", Addr: " << "(" << k_out << ", " << y_out << ", " << x_out << ")" << std::endl;
+                output_queue.push_back(psum);
+            }
+        }
+    }
+
+
+    int MultArray::cartesian_product(const std::vector<Input_Element>& ia_vector, const std::vector<Filter_Element>& w_vector, Scnn::Tensor* output_tensor) {
+
+        output_queue.clear();
+        int idle_count = 0;
+
+        for (const auto& ia : ia_vector) {
+            for (const auto& w : w_vector) {
+
+                int c_in = std::get<0>(ia.addr);
+                int y_in = std::get<1>(ia.addr);
+                int x_in = std::get<2>(ia.addr);
+
+                int k_out = std::get<0>(w.addr);
+                int c_weight = std::get<1>(w.addr);
+                int y_weight = std::get<2>(w.addr);
+                int x_weight = std::get<3>(w.addr);
+
+                assert(c_in == c_weight);
+
+                int U = Scnn::LayerConfig::STRIDE;
+                int D = Scnn::LayerConfig::DILATION;
+                int P = Scnn::LayerConfig::PADDING;
+
+                int y_out = (y_in - y_weight * D + P) / U;
+                int x_out = (x_in - x_weight * D + P) / U;
+
+                int y_out_limit = output_tensor->dims.h;
+                int x_out_limit = output_tensor->dims.w;
+
+                if (y_out < 0 || x_out < 0 || y_out >= y_out_limit || x_out >= x_out_limit) {
+                    idle_count++;
                     continue;
                 }
 
@@ -56,7 +97,11 @@ namespace Scnn {
                 output_queue.push_back(psum);
             }
         }
+
+        return idle_count;
     }
+
+
 
     bool MultArray::has_output() {
         return !output_queue.empty();
@@ -72,5 +117,4 @@ namespace Scnn {
         }
         return outputs;
     }
-
 }

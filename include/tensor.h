@@ -40,6 +40,8 @@ public:
     void print();
 
     int get_non_zero_count();
+
+    void load_from_file(const std::string& filename);
 };
 
 }

@@ -22,6 +22,8 @@ public:
     void reset();
 
     void cartesian_product(const std::vector<Input_Element>& ia_vector, const std::vector<Filter_Element>& w_vector);
+
+    int cartesian_product(const std::vector<Input_Element>& ia_vector, const std::vector<Filter_Element>& w_vector, Scnn::Tensor* output_tensor);
     
     std::vector<PartialSum> pop_outputs();
 

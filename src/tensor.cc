@@ -1,5 +1,6 @@
 #include "common.h"
 #include "tensor.h"
+#include <sstream>
 
 
 namespace Scnn {
@@ -67,12 +68,57 @@ namespace Scnn {
         this->sparsity = (float)this->non_zero_count / (float)this->size;
     }
 
+
+    void Tensor::load_from_file(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            std::cerr << "Error: Could not open file " << filename << std::endl;
+            return;
+        }
+
+        std::string line;
+        std::vector<float> values;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string item;
+            while (std::getline(ss, item, ',')) {
+                try {
+                    values.push_back(std::stof(item));
+                } catch (const std::invalid_argument& e) {
+                    // Ignore non-numeric values or handle error
+                }
+            }
+        }
+        file.close();
+
+        assert(values.size() == data.size());
+        
+        // if (values.size() != data.size()) {
+        //      std::cerr << "Warning: File contains " << values.size() << " values, but tensor expects " << data.size() << ". Resizing/Filling." << std::endl;
+        //      if (values.size() > data.size()) {
+        //          // Truncate
+        //      } else {
+        //          // Zero pad? or just fill what we have
+        //      }
+        // }
+
+        // Fill data
+        int limit = std::min(values.size(), data.size());
+        for(int i=0; i<limit; ++i) {
+            data[i] = values[i];
+        }
+        // Recalculate sparsity/non-zeros
+        this->non_zero_count = get_non_zero_count();
+        this->sparsity = (float)this->non_zero_count / (float)this->size;
+    }
+
+
     void Tensor::print() {
         int c = dims.c;
         int h = dims.h;
         int w = dims.w;
         int size = data.size();
-        std::cout << "non_zero_count: " << non_zero_count << std::endl;
+        std::cout << "non_zero_count: " << get_non_zero_count() << std::endl;
         std::cout << "size: " << size << std::endl;
         std::cout << "c: " << c << std::endl;
         std::cout << "h: " << h << std::endl;
