@@ -41,8 +41,15 @@ namespace Scnn {
                 int D = Scnn::LayerConfig::DILATION;
                 int P = Scnn::LayerConfig::PADDING;
 
-                int y_out = (y_in - y_weight * D + P) / U;
-                int x_out = (x_in - x_weight * D + P) / U;
+                int y_numerator = (y_in - y_weight * D + P);
+                int x_numerator = (x_in - x_weight * D + P);
+
+                if (y_numerator % U != 0 || x_numerator % U != 0) {
+                    continue;
+                }
+
+                int y_out = y_numerator / U;
+                int x_out = x_numerator / U;
 
                 PartialSum psum;
                 psum.value = ia.value * w.value;
@@ -78,8 +85,16 @@ namespace Scnn {
                 int D = Scnn::LayerConfig::DILATION;
                 int P = Scnn::LayerConfig::PADDING;
 
-                int y_out = (y_in - y_weight * D + P) / U;
-                int x_out = (x_in - x_weight * D + P) / U;
+                int y_numerator = (y_in - y_weight * D + P);
+                int x_numerator = (x_in - x_weight * D + P);
+
+                if (y_numerator % U != 0 || x_numerator % U != 0) {
+                   idle_count++;
+                   continue;
+                }
+
+                int y_out = y_numerator / U;
+                int x_out = x_numerator / U;
 
                 int y_out_limit = output_tensor->dims.h;
                 int x_out_limit = output_tensor->dims.w;

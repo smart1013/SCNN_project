@@ -35,8 +35,8 @@ int main() {
     // Initialize Output Tensor
     Scnn::TensorDims output_dims;
     output_dims.c = 3; 
-    output_dims.h = 10; // Assuming same as input for now (10x10 with padding)
-    output_dims.w = 10; 
+    output_dims.h = 4; // Assuming same as input for now (10x10 with padding)
+    output_dims.w = 4; 
     
     Scnn::Tensor OA(output_dims);
 
