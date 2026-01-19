@@ -46,10 +46,10 @@ int main() {
         Scnn::PE pe;
         
         // Loop structure (K=3, C=3 based on our CSVs)
-        for (int k = 0; k < 3; k++) {
+        for (int k = 0; k < 3; k+=Scnn::HardwareConfig::FILTERS_PER_GROUP) {
             for (int c = 0; c < 3; c++) {
                 loader.load_IA(IA, c);
-                loader.Load_FW(FW, k, k + 1, c);
+                loader.Load_FW(FW, k, k + Scnn::HardwareConfig::FILTERS_PER_GROUP, c);
                 
                 for (int pe_num = 0; pe_num < Scnn::HardwareConfig::NUM_PE; pe_num++) {
                     Scnn::Input_Buffer* input_tile = loader.IA_buffers[pe_num];

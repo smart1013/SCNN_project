@@ -204,6 +204,7 @@ namespace Scnn {
         weight_buffer.size = 0;
 
         // 2. Iterate through the range of Filters (k)
+        // assert(Scnn::LayerConfig::K == fw.size());
         k_end = std::min(k_end, (int)fw.size());
         for (int k = k_start; k < k_end; k++) {
             Scnn::Tensor* filter = fw[k];
