@@ -6,7 +6,7 @@
 #include "loader.h"
 
 namespace Scnn {
-
+class Dispatcher; // Forward declaration
 
 struct PartialSum {
     float value;
@@ -29,9 +29,13 @@ public:
 
     bool has_output();
 
+    void Cycle(Scnn::Dispatcher* dispatcher, Scnn::Tensor* output_tensor);
+
     void print_output_queue();
 
     std::deque<PartialSum> output_queue;
+    int total_mults_count;
+    int idle_count;
 };
 
 }

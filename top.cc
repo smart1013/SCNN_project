@@ -4,6 +4,7 @@
 #include "convlayer.h"
 #include "pe.h"
 #include "dispatcher.h"
+#include "mult_array.h"
 
 
 int main() {
@@ -33,21 +34,20 @@ int main() {
                     Scnn::Weight_Buffer* weight_buf = &loader.weight_buffer;
 
                     Scnn::Dispatcher dispatcher;
+                    Scnn::MultArray mult_array;
+
                     dispatcher.set_buffers(input_tile, weight_buf);
 
                     while (!dispatcher.finished || dispatcher.output_valid) {
-                        dispatcher.Cycle();
+
                         cycle++;
 
-                        if (dispatcher.output_valid) {
-
-                            if (dispatcher.latched_w_vec.size() < 4) {
-                                weight_count++;
-                            }
-                            dispatcher.output_valid = false;   
-                            
-                        }
+                        mult_array.Cycle(&dispatcher, &conv_layer.OA);
+                        dispatcher.Cycle();
                     }
+
+                    total_idle_count += mult_array.idle_count;
+                    total_count += mult_array.total_mults_count;
                 }
                 /**************************************************************/
 
@@ -56,6 +56,9 @@ int main() {
         
         std::cout << "Total cycles:" << "\t" << cycle << std::endl;
         // std::cout << "IA count:" << "\t" << ia_count << std::endl;
-        std::cout << "Weight count:" << "\t" << weight_count << std::endl;
+        // std::cout << "Weight count:" << "\t" << weight_count << std::endl;
+        std::cout << "Idle counts:" << "\t" << total_idle_count << std::endl;
+        std::cout << "Total count:" << "\t" << total_count << std::endl;
+        std::cout << "Multiplier Utilization:" << "\t" << 1.0 - (float)total_idle_count / (total_count) << std::endl;
     }
 }

@@ -1,9 +1,11 @@
 #include "mult_array.h"
+#include "dispatcher.h"
 #include "common.h"
 #include <iostream>
 
 namespace Scnn {
     MultArray::MultArray() {
+        reset();
     }
 
     MultArray::~MultArray() {
@@ -11,6 +13,8 @@ namespace Scnn {
 
     void MultArray::reset() {
         output_queue.clear();
+        idle_count = 0;
+        total_mults_count = 0;
     }
 
     void MultArray::print_output_queue() {
@@ -132,4 +136,28 @@ namespace Scnn {
         }
         return outputs;
     }
+
+
+
+
+
+    void MultArray::Cycle(Scnn::Dispatcher* dispatcher, Scnn::Tensor* output_tensor) {
+        if (!dispatcher->is_output_valid()) {
+            return;
+        } 
+
+        auto [ia_vector, w_vector] = dispatcher->pop_data();
+        idle_count += cartesian_product(ia_vector, w_vector, output_tensor);
+        total_mults_count += Scnn::HardwareConfig::NUM_MULTIPLIERS;
+
+        for (auto p : output_queue) {
+            int k_out = std::get<0>(p.addr);
+            int y_out = std::get<1>(p.addr);
+            int x_out = std::get<2>(p.addr);
+            int phy_addr = output_tensor->get_index(k_out, y_out, x_out);
+            output_tensor->data[phy_addr] += p.value;
+        }
+
+    }
+
 }
