@@ -3,6 +3,7 @@
 #include "loader.h"
 #include "convlayer.h"
 #include "pe.h"
+#include "dispatcher.h"
 
 
 int main() {
@@ -16,6 +17,8 @@ int main() {
 
         int total_idle_count = 0;
         int total_count = 0;
+        int cycle = 0;
+        int ia_count = 0;
         int weight_count = 0;
 
         for (int k = 0; k < Scnn::LayerConfig::K; k+=Scnn::HardwareConfig::FILTERS_PER_GROUP) {
@@ -25,23 +28,34 @@ int main() {
 
                 /**************************************************************/
                 for (int pe_num = 0; pe_num < Scnn::HardwareConfig::NUM_PE; pe_num++) {
+
                     Scnn::Input_Buffer* input_tile = loader.IA_buffers[pe_num];
                     Scnn::Weight_Buffer* weight_buf = &loader.weight_buffer;
 
-                    auto [idle_count, count, w_count] = pe.cartesian_product(input_tile, weight_buf, &conv_layer.OA);
-                    total_idle_count += idle_count;
-                    total_count += count;
-                    weight_count += w_count;
+                    Scnn::Dispatcher dispatcher;
+                    dispatcher.set_buffers(input_tile, weight_buf);
+
+                    while (!dispatcher.finished || dispatcher.output_valid) {
+                        dispatcher.Cycle();
+                        cycle++;
+
+                        if (dispatcher.output_valid) {
+
+                            if (dispatcher.latched_w_vec.size() < 4) {
+                                weight_count++;
+                            }
+                            dispatcher.output_valid = false;   
+                            
+                        }
+                    }
                 }
                 /**************************************************************/
 
             }
         }
-        conv_layer.OA.print();
-
-        std::cout << "Idle counts:" << "\t" << total_idle_count << std::endl;
-        std::cout << "Total counts:" << "\t" << total_count << std::endl;
-        std::cout << "Multiplier Utilization:" << "\t" << 1.0 - (float)total_idle_count / (total_count) << std::endl;
+        
+        std::cout << "Total cycles:" << "\t" << cycle << std::endl;
+        // std::cout << "IA count:" << "\t" << ia_count << std::endl;
         std::cout << "Weight count:" << "\t" << weight_count << std::endl;
     }
 }

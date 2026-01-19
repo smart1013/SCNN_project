@@ -19,7 +19,7 @@ public:
     ~PE();
 
     void cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer);
-    std::tuple<int, int> cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer, Scnn::Tensor* output_tensor);
+    std::tuple<int, int, int> cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer, Scnn::Tensor* output_tensor);
     
 };
 

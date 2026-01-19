@@ -52,13 +52,14 @@ namespace Scnn {
     }
 
 
-    std::tuple<int, int> PE::cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer, Scnn::Tensor* output_tensor) {
+    std::tuple<int, int, int> PE::cartesian_product(Scnn::Input_Buffer* input_tile, Scnn::Weight_Buffer* weight_buffer, Scnn::Tensor* output_tensor) {
         int ia_size = input_tile->size;
         int w_size = weight_buffer->size;
         Scnn::MultArray mult_array;
 
         int total_idle_count = 0;
         int total_count = 0;
+        int weight_count = 0;
 
         for (int i = 0; i < ia_size; i += Scnn::HardwareConfig::IA_VECTOR_SIZE) {
             ia_vector.clear();
@@ -85,6 +86,10 @@ namespace Scnn {
 
                 // std::cout << "IA vector size:" << "\t" << ia_vector.size() << std::endl;
                 // std::cout << "Weight vector size:" << "\t" << w_vector.size() << std::endl;
+
+                if (w_vector.size() < 4) {
+                    weight_count++;
+                }
                 
                 int idle_count = mult_array.cartesian_product(ia_vector, w_vector, output_tensor);
                 total_idle_count += idle_count;
@@ -101,7 +106,7 @@ namespace Scnn {
                 /******************************************************/
             }
         }
-        return std::make_tuple(total_idle_count, total_count);
+        return std::make_tuple(total_idle_count, total_count, weight_count);
     }
 
 
