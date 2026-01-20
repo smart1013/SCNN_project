@@ -3,6 +3,10 @@
 #include "loader.h"
 #include "convlayer.h"
 #include "pe.h"
+#include "dispatcher.h"
+#include "mult_array.h"
+#include "buffer_queue.h"
+#include "accumulator.h"
 
 int main() {
     Scnn::TensorDims input_dims;
@@ -35,15 +39,19 @@ int main() {
     // Initialize Output Tensor
     Scnn::TensorDims output_dims;
     output_dims.c = 3; 
-    output_dims.h = 4; // Assuming same as input for now (10x10 with padding)
-    output_dims.w = 4; 
+    output_dims.h = 10; 
+    output_dims.w = 10; 
     
     Scnn::Tensor OA(output_dims);
 
     // Convolution Simulation
     {
         Scnn::Loader loader;
-        Scnn::PE pe;
+
+        int total_idle_count = 0;
+        int total_count = 0;
+        int cycle = 0;
+        int total_idle_cycle = 0;
         
         // Loop structure (K=3, C=3 based on our CSVs)
         for (int k = 0; k < 3; k+=Scnn::HardwareConfig::FILTERS_PER_GROUP) {
@@ -53,10 +61,36 @@ int main() {
                 
                 for (int pe_num = 0; pe_num < Scnn::HardwareConfig::NUM_PE; pe_num++) {
                     Scnn::Input_Buffer* input_tile = loader.IA_buffers[pe_num];
-                    pe.cartesian_product(input_tile, &loader.weight_buffer, &OA);
+                    
+                    Scnn::Dispatcher dispatcher;
+                    Scnn::MultArray mult_array;
+                    Scnn::BufferQueue buffer_queue;
+                    Scnn::Accumulator accumulator;
+
+                    dispatcher.set_buffers(input_tile, &loader.weight_buffer);
+
+                    while (!dispatcher.finished || dispatcher.output_valid || mult_array.has_output() || !buffer_queue.is_empty()) {
+
+                        cycle++;
+
+                        accumulator.Cycle(&buffer_queue, &OA);
+                        mult_array.Cycle(&dispatcher, &buffer_queue, &OA);
+                        dispatcher.Cycle();
+                    }
+
+                    total_idle_count += mult_array.idle_count;
+                    total_count += mult_array.total_mults_count;
+                    total_idle_cycle += mult_array.idle_cycle;
                 }
             }
         }
+
+        std::cout << "Total cycles:" << "\t" << cycle << std::endl;
+        std::cout << "Idle counts:" << "\t" << total_idle_count << std::endl;
+        std::cout << "Total count:" << "\t" << total_count << std::endl;
+        std::cout << "Multiplier Utilization:" << "\t" << 1.0 - (float)total_idle_count / (total_count) << std::endl;
+        std::cout << "Idle cycles:" << "\t" << total_idle_cycle << std::endl;
+
     }
 
     std::cout << "Output Tensor (OA):" << std::endl;

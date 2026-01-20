@@ -1,5 +1,6 @@
 #include "mult_array.h"
 #include "dispatcher.h"
+#include "buffer_queue.h"
 #include "common.h"
 #include <iostream>
 
@@ -12,13 +13,14 @@ namespace Scnn {
     }
 
     void MultArray::reset() {
-        output_queue.clear();
+        int_latch.clear();
         idle_count = 0;
         total_mults_count = 0;
+        idle_cycle = 0;
     }
 
     void MultArray::print_output_queue() {
-        for (const auto& psum : output_queue) {
+        for (const auto& psum : int_latch) {
             int k_out = std::get<0>(psum.addr);
             int y_out = std::get<1>(psum.addr);
             int x_out = std::get<2>(psum.addr);
@@ -59,8 +61,7 @@ namespace Scnn {
                 psum.value = ia.value * w.value;
                 psum.addr = std::make_tuple(k_out, y_out, x_out);
                 
-                // std::cout << "Value: " << psum.value << ", Addr: " << "(" << k_out << ", " << y_out << ", " << x_out << ")" << std::endl;
-                output_queue.push_back(psum);
+                int_latch.push_back(psum);
             }
         }
     }
@@ -68,7 +69,7 @@ namespace Scnn {
 
     int MultArray::cartesian_product(const std::vector<Input_Element>& ia_vector, const std::vector<Filter_Element>& w_vector, Scnn::Tensor* output_tensor) {
 
-        output_queue.clear();
+        int_latch.clear();
         int idle_count = 0;
 
         for (const auto& ia : ia_vector) {
@@ -113,7 +114,7 @@ namespace Scnn {
                 psum.addr = std::make_tuple(k_out, y_out, x_out);
                 
                 // std::cout << "Value: " << psum.value << ", Addr: " << "(" << k_out << ", " << y_out << ", " << x_out << ")" << std::endl;
-                output_queue.push_back(psum);
+                int_latch.push_back(psum);
             }
         }
 
@@ -123,16 +124,16 @@ namespace Scnn {
 
 
     bool MultArray::has_output() {
-        return !output_queue.empty();
+        return !int_latch.empty();
     }
 
     std::vector<PartialSum> MultArray::pop_outputs() {
         std::vector<PartialSum> outputs;
         for (int i = 0; i < Scnn::HardwareConfig::OUTPUT_PORT; i++) {
-            if (output_queue.empty()) {
+            if (int_latch.empty()) {
                 break;
             }
-            output_queue.pop_front();
+            int_latch.pop_front();
         }
         return outputs;
     }
@@ -141,8 +142,22 @@ namespace Scnn {
 
 
 
-    void MultArray::Cycle(Scnn::Dispatcher* dispatcher, Scnn::Tensor* output_tensor) {
+    void MultArray::Cycle(Scnn::Dispatcher* dispatcher, Scnn::BufferQueue* buffer_queue, Scnn::Tensor* output_tensor) {
+        
+        // check if there are outputs to be dispatched
+        if (!int_latch.empty()) {
+            buffer_queue->push_outputs(int_latch);
+
+            if (!int_latch.empty()) {
+                // stall if there are still outputs to be pushed
+                idle_cycle++;
+                return;
+            }
+        }
+        
+        // stall if there are no inputs to be processed
         if (!dispatcher->is_output_valid()) {
+            idle_cycle++;
             return;
         } 
 
@@ -150,12 +165,8 @@ namespace Scnn {
         idle_count += cartesian_product(ia_vector, w_vector, output_tensor);
         total_mults_count += Scnn::HardwareConfig::NUM_MULTIPLIERS;
 
-        for (auto p : output_queue) {
-            int k_out = std::get<0>(p.addr);
-            int y_out = std::get<1>(p.addr);
-            int x_out = std::get<2>(p.addr);
-            int phy_addr = output_tensor->get_index(k_out, y_out, x_out);
-            output_tensor->data[phy_addr] += p.value;
+        if (!int_latch.empty()) {
+            buffer_queue->push_outputs(int_latch);
         }
 
     }

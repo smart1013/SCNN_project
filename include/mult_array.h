@@ -4,9 +4,12 @@
 #include "common.h"
 #include "tensor.h"
 #include "loader.h"
+#include "dispatcher.h"
+#include <deque>
 
 namespace Scnn {
 class Dispatcher; // Forward declaration
+class BufferQueue; // Forward declaration
 
 struct PartialSum {
     float value;
@@ -29,13 +32,14 @@ public:
 
     bool has_output();
 
-    void Cycle(Scnn::Dispatcher* dispatcher, Scnn::Tensor* output_tensor);
+    void Cycle(Scnn::Dispatcher* dispatcher, Scnn::BufferQueue* buffer_queue, Scnn::Tensor* output_tensor);
 
     void print_output_queue();
 
-    std::deque<PartialSum> output_queue;
+    std::deque<PartialSum> int_latch;
     int total_mults_count;
     int idle_count;
+    int idle_cycle;
 };
 
 }

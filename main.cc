@@ -1,33 +1,59 @@
-#include <iostream>
+#include "tensor.h"
+#include "loader.h"
+#include "convlayer.h"
+#include "pe.h"
+#include "dispatcher.h"
 #include "mult_array.h"
-#include <vector>
-
-Scnn::Element make_element(float value, int addr) {
-    Scnn::Element element;
-    element.valid = true;
-    element.value = value;
-    element.addr = addr;
-    return element;
-}
+#include "buffer_queue.h"
+#include "common.h"
 
 int main() {
-    std::vector<Scnn::Element> ia_vector;
-    std::vector<Scnn::Element> w_vector;
+    std::deque<Scnn::PartialSum> batch;
+    Scnn::BufferQueue buffer_queue;
 
-    ia_vector.push_back(make_element(1.0, 0));
-    ia_vector.push_back(make_element(2.0, 1));
-    ia_vector.push_back(make_element(3.0, 2));
+    Scnn::PartialSum psum;
+    psum.value = 1.0;
+    psum.addr = std::make_tuple(1, 1, 1);
+    batch.push_back(psum);
 
-    w_vector.push_back(make_element(4.0, 0));
-    w_vector.push_back(make_element(5.0, 1));
-    w_vector.push_back(make_element(6.0, 2));
-    
-    Scnn::MultArray mult_array;
-    mult_array.cartesian_product(ia_vector, w_vector);
+    psum.value = 2.0;
+    psum.addr = std::make_tuple(1, 1, 1);
+    batch.push_back(psum);
 
-    mult_array.print_output_queue();
+    psum.value = 3.0;
+    psum.addr = std::make_tuple(1, 1, 1);
+    batch.push_back(psum);
 
-    mult_array.reset();
+    psum.value = 4.0;
+    psum.addr = std::make_tuple(1, 1, 1);
+    batch.push_back(psum);
 
-    return 0;
+    psum.value = 5.0;
+    psum.addr = std::make_tuple(2, 1, 1);
+    batch.push_back(psum);
+
+    psum.value = 6.0;
+    psum.addr = std::make_tuple(2, 1, 1);
+    batch.push_back(psum);
+
+    psum.value = 7.0;
+    psum.addr = std::make_tuple(2, 1, 1);
+    batch.push_back(psum);
+
+    psum.value = 8.0;
+    psum.addr = std::make_tuple(2, 1, 1);
+    batch.push_back(psum);
+
+    buffer_queue.push_outputs(batch);
+
+    for (auto& element : batch) {
+        std::cout << element.value << " " << std::endl;
+    }
+
+    int hash1 = buffer_queue.get_bank_id(1, 1, 1);
+    int hash2 = buffer_queue.get_bank_id(3, 10, 1);
+
+    std::cout << "hash1: " << hash1 << std::endl;
+    std::cout << "hash2: " << hash2 << std::endl;
+
 }

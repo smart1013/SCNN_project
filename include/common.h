@@ -27,6 +27,8 @@ struct HardwareConfig{
     static const int W_VECTOR_SIZE = 4;
     static const int OUTPUT_PORT = 16;
     static const int FILTERS_PER_GROUP = 4;
+    static const int BUFFER_QUEUE_DEPTH = 32;
+    static const int NUM_BANKS = 32;
 };
 
 // Layer (CNN) Configuration
@@ -38,13 +40,13 @@ struct LayerConfig {
     static const int R = 11;
     static const int K = 16;
 
-    static const int STRIDE = 1;
-    static const int DILATION = 1;
-    static const int PADDING = 0;
-
-    // static const int STRIDE = 1;
+    // static const int STRIDE = 2;
     // static const int DILATION = 1;
     // static const int PADDING = 1;
+
+    static const int STRIDE = 1;
+    static const int DILATION = 1;
+    static const int PADDING = 1;
 
     static constexpr float IA_MIN_VAL = 0.0;
     static constexpr float IA_MAX_VAL = 1.0;

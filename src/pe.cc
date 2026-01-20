@@ -95,7 +95,7 @@ namespace Scnn {
                 total_idle_count += idle_count;
                 total_count += Scnn::HardwareConfig::NUM_MULTIPLIERS;
 
-                for (auto p : mult_array.output_queue) {
+                for (auto p : mult_array.int_latch) {
                     int k_out = std::get<0>(p.addr);
                     int y_out = std::get<1>(p.addr);
                     int x_out = std::get<2>(p.addr);
