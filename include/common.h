@@ -40,10 +40,6 @@ struct LayerConfig {
     static const int R = 11;
     static const int K = 16;
 
-    // static const int STRIDE = 2;
-    // static const int DILATION = 1;
-    // static const int PADDING = 1;
-
     static const int STRIDE = 1;
     static const int DILATION = 1;
     static const int PADDING = 1;
