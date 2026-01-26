@@ -40,9 +40,6 @@ namespace Scnn {
                 }
 
                 /******************************************************/
-
-                // std::cout << "IA vector size:" << "\t" << ia_vector.size() << std::endl;
-                // std::cout << "Weight vector size:" << "\t" << w_vector.size() << std::endl;
                 
                 mult_array.cartesian_product(ia_vector, w_vector);
 
